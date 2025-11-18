@@ -1,0 +1,49 @@
+# Aplicações de Satélites, Espaços de Cores e Demonstração em Python
+
+## 1. Aplicações de Satélite e Sensoriamento Remoto
+
+Imagens de satélite são amplamente utilizadas em diversas áreas, como:
+
+- **Agricultura** – monitoramento de safras, detecção de estresse hídrico.  
+- **Meio ambiente** – mapeamento de desmatamento, queimadas, mudanças na vegetação.  
+- **Gestão urbana** – análise de expansão urbana e uso do solo.  
+- **Desastres naturais** – acompanhamento de enchentes, deslizamentos e áreas críticas.
+
+Essas aplicações dependem fortemente de como as **bandas espectrais** são combinadas e representadas em **espaços de cor**.
+
+---
+
+## 2. Espaços de Cores Comumente Utilizados em Sensoriamento Remoto
+
+### 2.1. Espaço de Cor RGB
+O espaço RGB (Red, Green, Blue) é o mais usado para exibição de imagens em tela.  
+No sensoriamento remoto, é utilizado para:
+- **Composição de cor verdadeira** (true color)  
+- **Composição de falsa cor** (false color) destacando vegetação, água etc.
+
+#### 🔹 Exemplo em Python – Composição RGB (Cor Verdadeira)
+
+Descrição:  
+Este código lê uma imagem multibanda (como Sentinel-2), seleciona as bandas 4, 3 e 2 (R, G, B) e gera uma imagem RGB normalizada.
+
+```python
+import rasterio
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Caminho para a imagem multibanda (ex.: Sentinel-2)
+caminho_imagem = "sentinel2_multiband.tif"
+
+with rasterio.open(caminho_imagem) as src:
+    red = src.read(4).astype(np.float32)
+    green = src.read(3).astype(np.float32)
+    blue = src.read(2).astype(np.float32)
+
+rgb = np.dstack([red, green, blue])
+rgb_norm = (rgb - rgb.min()) / (rgb.max() - rgb.min())
+
+plt.figure(figsize=(8, 8))
+plt.title("Composição RGB (True Color)")
+plt.imshow(rgb_norm)
+plt.axis("off")
+plt.show()
