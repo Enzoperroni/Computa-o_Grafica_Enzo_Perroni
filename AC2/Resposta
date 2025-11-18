@@ -1,0 +1,195 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# =========================
+# Funções matemáticas
+# =========================
+
+def translate(points, tx, ty):
+    T = np.array([[1, 0, tx],
+                  [0, 1, ty],
+                  [0, 0, 1]])
+    return apply_transform(points, T)
+
+def scale(points, sx, sy=None):
+    if sy is None:
+        sy = sx
+    S = np.array([[sx, 0,  0],
+                  [0,  sy, 0],
+                  [0,  0,  1]])
+    return apply_transform(points, S)
+
+def rotate(points, angle_degrees, clockwise=False):
+    theta = np.deg2rad(angle_degrees)
+    if clockwise:
+        theta = -theta
+    cos_t, sin_t = np.cos(theta), np.sin(theta)
+    R = np.array([[cos_t, -sin_t, 0],
+                  [sin_t,  cos_t, 0],
+                  [0,      0,     1]])
+    return apply_transform(points, R)
+
+def reflect_x(points):
+    M = np.array([[1,  0, 0],
+                  [0, -1, 0],
+                  [0,  0, 1]])
+    return apply_transform(points, M)
+
+def reflect_y(points):
+    M = np.array([[-1, 0, 0],
+                  [0,  1, 0],
+                  [0,  0, 1]])
+    return apply_transform(points, M)
+
+def shear_x(points, k):
+    Sh = np.array([[1, k, 0],
+                   [0, 1, 0],
+                   [0, 0, 1]])
+    return apply_transform(points, Sh)
+
+def apply_transform(points, M):
+    pts = np.array(points, dtype=float)
+    if pts.ndim == 1:
+        pts = pts.reshape(1, 2)
+    ones = np.ones((pts.shape[0], 1))
+    hom = np.hstack([pts, ones])
+    result = (M @ hom.T).T
+    return result[:, :2]
+
+# =========================
+# Funções de plot
+# =========================
+
+def plot_points(original, transformed, labels=("Original", "Transformado"),
+                title="Transformação de ponto"):
+    orig = np.array(original).reshape(-1, 2)
+    transf = np.array(transformed).reshape(-1, 2)
+
+    plt.figure()
+    plt.axhline(0, color="black", linewidth=0.5)
+    plt.axvline(0, color="black", linewidth=0.5)
+
+    plt.scatter(orig[:, 0], orig[:, 1], marker='o', label=labels[0])
+    plt.scatter(transf[:, 0], transf[:, 1], marker='x', label=labels[1])
+
+    if orig.shape == transf.shape:
+        for (x0, y0), (x1, y1) in zip(orig, transf):
+            plt.arrow(x0, y0, x1 - x0, y1 - y0,
+                      head_width=0.1, length_includes_head=True)
+
+    plt.legend()
+    plt.title(title)
+    plt.grid(True)
+    plt.axis('equal')
+    plt.show()
+
+def plot_polygon(original, transformed, labels=("Original", "Transformado"),
+                 title="Transformação de polígono"):
+    orig = np.array(original)
+    transf = np.array(transformed)
+
+    if not np.allclose(orig[0], orig[-1]):
+        orig = np.vstack([orig, orig[0]])
+    if not np.allclose(transf[0], transf[-1]):
+        transf = np.vstack([transf, transf[0]])
+
+    plt.figure()
+    plt.axhline(0, color="black", linewidth=0.5)
+    plt.axvline(0, color="black", linewidth=0.5)
+
+    plt.plot(orig[:, 0], orig[:, 1], marker='o', label=labels[0])
+    plt.plot(transf[:, 0], transf[:, 1], marker='x--', label=labels[1])
+
+    plt.legend()
+    plt.title(title)
+    plt.grid(True)
+    plt.axis('equal')
+    plt.show()
+
+# ============================================
+#              EXERCÍCIOS
+# ============================================
+
+# =====================
+# Exercício 1: Translação
+# =====================
+P = np.array([2, 3])
+P1 = translate(P, 4, -2)[0]
+print("Exercício 1 — P' =", P1)
+plot_points(P, P1, title="Exercício 1: Translação (4, -2)")
+
+# =====================
+# Exercício 2: Escala uniforme
+# =====================
+triangle = np.array([[1, 1], [3, 1], [2, 4]])
+tri2 = scale(triangle, 2)
+print("Exercício 2 — Triângulo escalado:\n", tri2)
+plot_polygon(triangle, tri2, title="Exercício 2: Escala uniforme")
+
+# =====================
+# Exercício 3: Escala não uniforme
+# =====================
+tri3 = scale(triangle, 2, 0.5)
+print("Exercício 3 — Triângulo escala não uniforme:\n", tri3)
+plot_polygon(triangle, tri3, title="Exercício 3: Escala não uniforme")
+
+# =====================
+# Exercício 4: Rotação 90° anti-horário
+# =====================
+P = np.array([1, 0])
+P4 = rotate(P, 90)[0]
+print("Exercício 4 — P' =", P4)
+plot_points(P, P4, title="Exercício 4: Rotação 90°")
+
+# =====================
+# Exercício 5: Rotação de quadrado
+# =====================
+square = np.array([[1,1],[1,4],[4,4],[4,1]])
+sq5 = rotate(square, 45, clockwise=True)
+print("Exercício 5 — Quadrado rotacionado:\n", sq5)
+plot_polygon(square, sq5, title="Exercício 5: Rotação de 45° horário")
+
+# =====================
+# Exercício 6: Reflexão no eixo y
+# =====================
+P = np.array([2, 5])
+P6 = reflect_y(P)[0]
+print("Exercício 6 — P' =", P6)
+plot_points(P, P6, title="Exercício 6: Reflexão eixo y")
+
+# =====================
+# Exercício 7: Reflexão do triângulo no eixo x
+# =====================
+triangle7 = np.array([[2,3],[4,3],[3,5]])
+tri7 = reflect_x(triangle7)
+print("Exercício 7 — Triângulo refletido:\n", tri7)
+plot_polygon(triangle7, tri7, title="Exercício 7: Reflexão eixo x")
+
+# =====================
+# Exercício 8: Cisalhamento
+# =====================
+P = np.array([2,3])
+P8 = shear_x(P, 2)[0]
+print("Exercício 8 — P' =", P8)
+plot_points(P, P8, title="Exercício 8: Cisalhamento horizontal (k=2)")
+
+# =====================
+# Exercício 9: Composição
+# =====================
+P = np.array([3, 2])
+P9_1 = translate(P, 1, -1)[0]
+P9_2 = rotate(P9_1, 90)[0]
+P9_3 = scale(P9_2, 2)[0]
+print("Exercício 9 — Resultado final =", P9_3)
+
+# =====================
+# Exercício 10: Transformações em retângulo
+# =====================
+rect = np.array([[1,1],[5,1],[5,3],[1,3]])
+
+rect1 = translate(rect, -2, 3)
+rect2 = scale(rect1, 1.5, 0.5)
+rect3 = reflect_y(rect2)
+
+print("Exercício 10 — Retângulo final:\n", rect3)
+plot_polygon(rect, rect3, title="Exercício 10: Transformações no retângulo")
