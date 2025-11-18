@@ -1,0 +1,33 @@
+## 1. Como o olho humano percebe as cores e a função dos cones
+
+O olho humano percebe cores através dos **cones**, células da retina sensíveis à luz.  
+Existem três tipos de cones:
+- **S (azul)** – ondas curtas  
+- **M (verde)** – ondas médias  
+- **L (vermelho)** – ondas longas  
+
+A combinação dos três permite identificar diferentes cores.
+
+---
+
+## 2. Diferença entre RGB e CMYK + exemplos
+
+### RGB (Red, Green, Blue)
+- Modelo **aditivo** baseado em luz.  
+- **Aplicação:** telas, monitores, celulares.
+
+### CMYK (Cyan, Magenta, Yellow, Black)
+- Modelo **subtrativo** baseado em pigmentos.  
+- **Aplicação:** impressão gráfica (revistas, cartazes, embalagens).
+
+---
+
+## 3. Cor aditiva e cor subtrativa + exemplos
+
+### Cor Aditiva
+- Formada pela **adição de luz**.  
+- **Exemplo:** telas RGB e painéis de LED.
+
+### Cor Subtrativa
+- Formada pela **subtração da luz refletida por pigmentos**.  
+- **Exemplo:** impressão CMYK e pinturas em papel.
